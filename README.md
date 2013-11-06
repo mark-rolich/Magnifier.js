@@ -13,8 +13,6 @@ Features:
 
 Magnifier.js requires Event.js package, which can be acquired at the following links:
 
-Event.js
-
 * [Github](https://github.com/mark-rolich/Event.js)
 * [JS Classes](http://www.jsclasses.org/package/212-JavaScript-Handle-events-in-a-browser-independent-manner.html)
 
