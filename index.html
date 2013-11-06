@@ -1,0 +1,438 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Magnifier.js demo</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="demo.css">
+<link rel="stylesheet" type="text/css" href="magnifier.css">
+<link rel="stylesheet" type="text/css" href="gallery.css">
+</head>
+<body>
+<div class="wrapper">
+    <h1 class="heading">Magnifier.js</h1>
+
+    <p>Magnifier.js is a Javascript library enabling magnifying glass effect on an images.</p>
+
+    <p>Features</p>
+
+    <ul>
+        <li>Zoom in / out functionality using mouse wheel</li>
+        <li>Attachment of user defined functions for thumbnail entering, moving and leaving and image zooming events</li>
+        <li>Display loading text while the large image is loading, and switch to lens once its loaded</li>
+    </ul>
+
+    <p>Magnifier.js uses Event.js as a cross-browser event handling wrapper, which is available at <a href="https://github.com/mark-rolich/Event.js">Github</a>
+    and <a href="http://www.jsclasses.org/package/212-JavaScript-Handle-events-in-a-browser-independent-manner.html">JSClasses.org</a></p>
+    <p>Works in Chrome, Firefox, Safary, IE 7, 8, 9 & 10.</p>
+    <p>Licensed under the MIT License, &copy; 2013 Mark Rolich</p>
+    <p>Source code is available at <a href="https://github.com/mark-rolich/Magnifier.js">Github</a></p>
+
+    <p>Magnifier.js can be used for both single and multiple images, as well as galleries using dynamic option setting on gallery navigation:</p>
+
+    <div class="gallery">
+        <div class="slider">
+            <ul id="gallery"></ul>
+        </div>
+        <div class="magnifier-preview" id="gallery-preview">
+            <div class="heading">Birds of America</div>
+            <div class="title" id="gallery-preview-title">&nbsp;</div>
+            <div class="author">by John James Audubon</div>
+        </div>
+        <div class="btn-wrapper">
+            <button class="prev" id="gallery-prev">&lt;</button>
+            <button class="next" id="gallery-next">&gt;</button>
+        </div>
+    </div>
+
+    <h2 class="heading">At a glance</h2>
+
+    <p>Include magnifier.css in the head section of the HTML document</p>
+
+    <pre><code>&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;magnifier.css&quot;&gt;</code></pre>
+
+    <p>Let's create sample HTML markup</p>
+
+    <pre><code>&lt;div&gt;
+    &lt;a class=&quot;magnifier-thumb-wrapper&quot; href=&quot;http://en.wikipedia.org/wiki/File:Starry_Night_Over_the_Rhone.jpg&quot;&gt;
+        &lt;img id=&quot;thumb&quot; src=&quot;http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/200px-Starry_Night_Over_the_Rhone.jpg&quot;&gt;
+    &lt;/a&gt;
+    &lt;div class=&quot;magnifier-preview&quot; id=&quot;preview&quot; style=&quot;width: 200px; height: 133px&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+    <p class="note">The image we need to apply magnifying glass effect should wrapped in a <strong>block-level</strong> element with <strong>relative</strong> position,
+    so we assign <span class="code">magnifier-thumb-wrapper</span> CSS class defined in magnifier.css to the image wrapping link.
+    The element where we show magnified image should have <span class="code">magnifier-preview</span> CSS class.</p>
+
+    <p>Include Javascript libraries and initialize magnifier</p>
+
+    <pre><code>&lt;script type=&quot;text/javascript&quot; src=&quot;Event.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;Magnifier.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+var evt = new Event(),
+    m = new Magnifier(evt);
+&lt;/script&gt;</code></pre>
+    <p>Set magnifier options</p>
+    <pre><code>m.attach({
+    thumb: document.getElementById('thumb'),
+    large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/400px-Starry_Night_Over_the_Rhone.jpg',
+    largeWrapper: document.getElementById('preview')
+});</code></pre>
+
+    <p>Result (mouseover to magnify)</p>
+
+    <div style="width: 410px; margin: 0 auto; overflow: hidden">
+        <a class="magnifier-thumb-wrapper demo" href="http://en.wikipedia.org/wiki/File:Starry_Night_Over_the_Rhone.jpg">
+            <img id="thumb" src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/200px-Starry_Night_Over_the_Rhone.jpg">
+        </a>
+        <div class="magnifier-preview example heading" id="preview" style="width: 200px; height: 133px">Starry Night Over The Rhone<br>by Vincent van Gogh</div>
+    </div>
+
+    <p>Let's make preview window larger (2x of the size of the thumbnail)</p>
+
+    <pre><code>...
+&lt;div class=&quot;magnifier-preview&quot; id=&quot;preview&quot; style=&quot;width: 400px; height: 267px&quot;&gt;&amp;nbsp;&lt;/div&gt;
+...</code></pre>
+
+    <p>And set zoom level to 3</p>
+
+    <pre><code>m.attach({
+    thumb: document.getElementById('thumb'),
+    large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/1200px-Starry_Night_Over_the_Rhone.jpg',
+    largeWrapper: document.getElementById('preview'),
+    zoom: 3
+});</code></pre>
+
+    <div style="width: 610px; margin: 0 auto; overflow: hidden">
+        <a class="magnifier-thumb-wrapper demo" href="http://en.wikipedia.org/wiki/File:Starry_Night_Over_the_Rhone.jpg">
+            <img id="thumb1" src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/200px-Starry_Night_Over_the_Rhone.jpg">
+        </a>
+        <div class="magnifier-preview example heading" id="preview1">Starry Night Over The Rhone<br>by Vincent van Gogh</div>
+    </div>
+
+    <p>Magnifier.js automatically increases zoom level if preview window size is bigger than thumbnail size (in our example by 2, so actual zoom level is 6)</p>
+
+    <h2 class="heading">Deeper view</h2>
+
+    <p>The complete list of magnifier options</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Required</th>
+                <th>Default</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>thumb</td>
+                <td>DOM element</td>
+                <td>image element to magnify</td>
+                <td>yes</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>large</td>
+                <td>string</td>
+                <td>large image URL</td>
+                <td>yes</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>largeWrapper</td>
+                <td>DOM element</td>
+                <td>element where large image should be appended</td>
+                <td>yes</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>zoom</td>
+                <td>int</td>
+                <td>initial zoom level</td>
+                <td>no</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>zoomable</td>
+                <td>bool</td>
+                <td>enable zoom in / out using mouse wheel</td>
+                <td>no</td>
+                <td>false</td>
+            </tr>
+            <tr>
+                <td>onthumbenter</td>
+                <td>callback</td>
+                <td>function to call on thumbnail enter event</td>
+                <td>no</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>onthumbmove</td>
+                <td>callback</td>
+                <td>function to call on thumbnail move event</td>
+                <td>no</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>onthumbleave</td>
+                <td>callback</td>
+                <td>function to call on thumbnail leave event</td>
+                <td>no</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>onzoom</td>
+                <td>callback</td>
+                <td>function to call on zoom event</td>
+                <td>no</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Besides of <strong>attach</strong> method, all of the options except <span class="code">thumb</span> and <span class="code">large</span>
+    can be set globally at magnifier initialization, and then overridden individually using <strong>attach</strong> method</p>
+
+    <pre><code>m = new Magnifier(evt, {
+    zoom: 3,
+    zoomable: true,
+    ...
+});</code></pre>
+
+    <p>
+
+    <p>Also, you can omit parameters on subsequent calls of <strong>attach</strong> method once you set them up (whether globally or not), Magnifier.js
+    uses values from the last found options setup (for <span class="code">zoom</span> it uses only global or default value), keeping in mind that
+    <span class="code">thumb</span> and <span class="code">large</span> should be always specified in the options object.
+    </p>
+
+    <p>Once called, user defined event handlers receive as an argument the object with the following properties:</p>
+
+    <p><strong>onthumbenter</strong>, <strong>onthumbmove</strong> and <strong>onthumbleave</strong></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>thumb</td>
+                <td>current thumbnail DOM element</td>
+            </tr>
+            <tr>
+                <td>lens</td>
+                <td>lens DOM element</td>
+            </tr>
+            <tr>
+                <td>large</td>
+                <td>large image DOM element</td>
+            </tr>
+            <tr>
+                <td>x</td>
+                <td>mouse X coordinate</td>
+            </tr>
+            <tr>
+                <td>y</td>
+                <td>mouse Y coordinate</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><strong>onzoom</strong></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>thumb</td>
+                <td>current thumbnail DOM element</td>
+            </tr>
+            <tr>
+                <td>lens</td>
+                <td>lens DOM element</td>
+            </tr>
+            <tr>
+                <td>large</td>
+                <td>large image DOM element</td>
+            </tr>
+            <tr>
+                <td>x</td>
+                <td>mouse X coordinate</td>
+            </tr>
+            <tr>
+                <td>y</td>
+                <td>mouse Y coordinate</td>
+            </tr>
+            <tr>
+                <td>zoom</td>
+                <td>current zoom level</td>
+            </tr>
+            <tr>
+                <td>w</td>
+                <td>lens width</td>
+            </tr>
+            <tr>
+                <td>h</td>
+                <td>lens height</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>An example of user defined functions attachment</p>
+
+    <pre><code>m.attach({
+    thumb: document.getElementById('thumb2'),
+    large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/1600px-Starry_Night_Over_the_Rhone.jpg',
+    largeWrapper: document.getElementById('preview2'),
+    zoom: 2,
+    zoomable: true,
+    onthumbenter: function () {
+        document.getElementById('enter').innerHTML = 'Mouse enter';
+        document.getElementById('leave').innerHTML = '';
+        document.getElementById('zoom').innerHTML = '';
+    },
+    onthumbmove: function () {
+        document.getElementById('move').innerHTML = 'Mouse move';
+    },
+    onthumbleave: function () {
+        document.getElementById('enter').innerHTML = '';
+        document.getElementById('move').innerHTML = '';
+        document.getElementById('zoom').innerHTML = '';
+        document.getElementById('leave').innerHTML = 'Mouse leave';
+    },
+    onzoom: function (data) {
+        document.getElementById('zoom').innerHTML = 'Zoom: ' + data.zoom;
+    }
+});</code></pre>
+
+    <div style="width: 610px; margin: 10px auto 100px auto">
+        <a class="magnifier-thumb-wrapper demo" href="http://en.wikipedia.org/wiki/File:Starry_Night_Over_the_Rhone.jpg">
+            <img id="thumb2" src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/200px-Starry_Night_Over_the_Rhone.jpg">
+        </a>
+        <div class="magnifier-info">
+            <div id="enter">&nbsp;</div>
+            <div id="move">&nbsp;</div>
+            <div id="leave">&nbsp;</div>
+            <div id="zoom">&nbsp;</div>
+        </div>
+        <div class="magnifier-preview example heading" id="preview2">Starry Night Over The Rhone<br>by Vincent van Gogh</div>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="Event.js"></script>
+<script type="text/javascript" src="Magnifier.js"></script>
+<script type="text/javascript" src="Gallery.js"></script>
+<script>
+var evt = new Event(),
+    m = new Magnifier(evt, {
+        largeWrapper: document.getElementById('gallery-preview')
+    }),
+    imageData = [
+        {
+            title: 'Downy Woodpecker',
+            thumb: 'http://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/112_Downy_Woodpecker.jpg/250px-112_Downy_Woodpecker.jpg',
+            large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/112_Downy_Woodpecker.jpg/1000px-112_Downy_Woodpecker.jpg',
+            url: 'http://commons.wikimedia.org/wiki/File:112_Downy_Woodpecker.jpg'
+        },
+        {
+            title: 'Hooded Warbler',
+            thumb: 'http://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/110_Hooded_Warbler.jpg/250px-110_Hooded_Warbler.jpg',
+            large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/110_Hooded_Warbler.jpg/1000px-110_Hooded_Warbler.jpg',
+            url: 'http://commons.wikimedia.org/wiki/File:110_Hooded_Warbler.jpg'
+        },
+        {
+            title: 'Pileated Woodpecker',
+            thumb: 'http://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/111_Pileated_Woodpecker.jpg/250px-111_Pileated_Woodpecker.jpg',
+            large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/111_Pileated_Woodpecker.jpg/1000px-111_Pileated_Woodpecker.jpg',
+            url: 'http://commons.wikimedia.org/wiki/File:111_Pileated_Woodpecker.jpg'
+        },
+        {
+            title: 'Bluebird',
+            thumb: 'http://upload.wikimedia.org/wikipedia/commons/thumb/5/51/113_Blue-bird.jpg/250px-113_Blue-bird.jpg',
+            large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/5/51/113_Blue-bird.jpg/1000px-113_Blue-bird.jpg',
+            url: 'http://commons.wikimedia.org/wiki/File:113_Blue-bird.jpg'
+        },
+        {
+            title: 'Wood Pewee',
+            thumb: 'http://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/115_Wood_Pewee.jpg/250px-115_Wood_Pewee.jpg',
+            large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/115_Wood_Pewee.jpg/1000px-115_Wood_Pewee.jpg',
+            url: 'http://commons.wikimedia.org/wiki/File:115_Wood_Pewee.jpg'
+        },
+        {
+            title: 'Blue Grosbeak',
+            thumb: 'http://upload.wikimedia.org/wikipedia/commons/thumb/1/11/122_Blue_Grosbeak.jpg/250px-122_Blue_Grosbeak.jpg',
+            large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/1/11/122_Blue_Grosbeak.jpg/1000px-122_Blue_Grosbeak.jpg',
+            url: 'http://commons.wikimedia.org/wiki/File:122_Blue_Grosbeak.jpg'
+        },
+        {
+            title: 'Cat Bird',
+            thumb: 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/128_Cat_Bird.jpg/250px-128_Cat_Bird.jpg',
+            large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/128_Cat_Bird.jpg/1000px-128_Cat_Bird.jpg',
+            url: 'http://commons.wikimedia.org/wiki/File:128_Cat_Bird.jpg'
+        }
+    ],
+    gallery = new Gallery(evt, m, {
+        gallery: document.getElementById('gallery'),
+        images: imageData,
+        prev: document.getElementById('gallery-prev'),
+        next: document.getElementById('gallery-next'),
+        previewText: document.getElementById('gallery-preview-title')
+    });
+
+m.attach({
+    thumb: document.getElementById('thumb'),
+    large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/400px-Starry_Night_Over_the_Rhone.jpg',
+    largeWrapper: document.getElementById('preview'),
+    zoomable: false
+});
+
+m.attach({
+    thumb: document.getElementById('thumb1'),
+    large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/1200px-Starry_Night_Over_the_Rhone.jpg',
+    largeWrapper: document.getElementById('preview1'),
+    zoom: 3,
+    zoomable: false
+});
+
+m.attach({
+    thumb: document.getElementById('thumb2'),
+    large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/1600px-Starry_Night_Over_the_Rhone.jpg',
+    largeWrapper: document.getElementById('preview2'),
+    zoom: 2,
+    zoomable: true,
+    onthumbenter: function (data) {
+        document.getElementById('enter').innerHTML = 'Mouse enter';
+        document.getElementById('leave').innerHTML = '';
+        document.getElementById('zoom').innerHTML = '';
+    },
+    onthumbmove: function (data) {
+        document.getElementById('move').innerHTML = 'Mouse move';
+    },
+    onthumbleave: function (data) {
+        document.getElementById('enter').innerHTML = '';
+        document.getElementById('move').innerHTML = '';
+        document.getElementById('zoom').innerHTML = '';
+        document.getElementById('leave').innerHTML = 'Mouse leave';
+    },
+    onzoom: function (data) {
+        document.getElementById('zoom').innerHTML = 'Zoom: ' + data.zoom;
+    }
+});
+</script>
+
+</body>
+</html>
