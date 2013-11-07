@@ -8,6 +8,8 @@ Javascript library enabling magnifying glass effect on an images.
 Features:
 
 * Zoom in / out functionality using mouse wheel
+* Setting options via Javascript or data attributes
+* Attachment to multiple images with single call
 * Attachment of user defined functions for thumbnail entering, moving and leaving and image zooming events
 * Display loading text while the large image is loading, and switch to lens once its loaded
 

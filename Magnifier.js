@@ -4,6 +4,8 @@
 * Features
 *
 * Zoom in / out functionality using mouse wheel
+* Setting options via Javascript or data attributes
+* Attachment to multiple images with single call
 * Attachment of user defined functions for thumbnail entering, moving and leaving and image zooming events
 * Display loading text while the large image is being loaded, and switch to lens once its loaded
 *
@@ -71,6 +73,53 @@ var Magnifier = function (evt, options) {
                     : curData.zoom,
         data = {},
         inBounds = false,
+        getElementsByClass = function (className) {
+            var list = [],
+                elements = null,
+                len = 0,
+                pattern = '',
+                i = 0,
+                j = 0;
+
+            if (document.getElementsByClassName) {
+                list = document.getElementsByClassName(className);
+            } else {
+                elements = document.getElementsByTagName('*');
+                len = elements.length;
+                pattern = new RegExp("(^|\\s)" + className + "(\\s|$)");
+
+                for (i, j; i < len; i += 1) {
+                    if (pattern.test(elements[i].className)) {
+                        list[j] = elements[i];
+                        j += 1;
+                    }
+                }
+            }
+
+            return list;
+        },
+        $ = function (selector) {
+            var idx = '',
+                type = selector.charAt(0),
+                result = null;
+
+            if (type === '#' || type === '.') {
+                idx = selector.substr(1, selector.length);
+            }
+
+            if (idx !== '') {
+                switch (type) {
+                case '#':
+                    result = document.getElementById(idx);
+                    break;
+                case '.':
+                    result = getElementsByClass(idx);
+                    break;
+                }
+            }
+
+            return result;
+        },
         createLens = function (thumb, idx) {
             var lens = document.createElement('div');
 
@@ -93,7 +142,7 @@ var Magnifier = function (evt, options) {
             curLarge.style.height = curData.largeH + 'px';
         },
         updateLensOnLoad = function (idx, thumb, large, largeWrapper) {
-            var lens = document.getElementById(idx + '-lens'),
+            var lens = $('#' + idx + '-lens'),
                 textWrapper = null;
 
             if (data[idx].status === 1) {
@@ -203,7 +252,7 @@ var Magnifier = function (evt, options) {
         },
         onThumbEnter = function () {
             curData = data[curIdx];
-            curLens = document.getElementById(curIdx + '-lens');
+            curLens = $('#' + curIdx + '-lens');
 
             if (curData.status === 2) {
                 curLens.className = 'magnifier-lens';
@@ -222,7 +271,7 @@ var Magnifier = function (evt, options) {
                     curData.zoomAttached = true;
                 }
 
-                curLarge = document.getElementById(curIdx + '-large');
+                curLarge = $('#' + curIdx + '-large');
                 curLarge.className = 'magnifier-large';
             } else if (curData.status === 1) {
                 curLens.className = 'magnifier-loader';
@@ -307,19 +356,30 @@ var Magnifier = function (evt, options) {
         if (options.thumb === undefined) {
             throw {
                 name: 'Magnifier error',
-                message: 'Please set thumbnail dom object',
+                message: 'Please set thumbnail',
                 toString: function () {return this.name + ": " + this.message; }
             };
         }
 
-        if (options.large === undefined) {
-            throw {
-                name: 'Magnifier error',
-                message: 'Please set large image url',
-                toString: function () {return this.name + ": " + this.message; }
-            };
-        }
+        var thumb = $(options.thumb),
+            i = 0;
 
+        if (thumb.length !== undefined) {
+            for (i; i < thumb.length; i += 1) {
+                options.thumb = thumb[i];
+                this.set(options);
+            }
+        } else {
+            options.thumb = thumb;
+            this.set(options);
+        }
+    };
+
+    this.setThumb = function (thumb) {
+        curThumb = thumb;
+    };
+
+    this.set = function (options) {
         if (data[options.thumb.id] !== undefined) {
             curThumb = options.thumb;
             return false;
@@ -330,11 +390,13 @@ var Magnifier = function (evt, options) {
             thumb       = options.thumb,
             idx         = thumb.id,
             zoomable    = null,
+            largeUrl    = null,
             largeWrapper = (
-                options.largeWrapper ||
-                document.getElementById(curData.largeWrapperId)
+                $('#' + options.largeWrapper) ||
+                $('#' + thumb.getAttribute('data-large-img-wrapper')) ||
+                $('#' + curData.largeWrapperId)
             ),
-            zoom = options.zoom || gZoom,
+            zoom = options.zoom || thumb.getAttribute('data-zoom') || gZoom,
             onthumbenter = (options.onthumbenter !== undefined)
                         ? options.onthumbenter
                         : curData.onthumbenter,
@@ -348,6 +410,14 @@ var Magnifier = function (evt, options) {
                         ? options.onzoom
                         : curData.onzoom;
 
+        if (options.large === undefined) {
+            largeUrl = (options.thumb.getAttribute('data-large-img-url') !== null)
+                            ? options.thumb.getAttribute('data-large-img-url')
+                            : options.thumb.src;
+        } else {
+            largeUrl = options.large;
+        }
+
         if (largeWrapper === null) {
             throw {
                 name: 'Magnifier error',
@@ -358,6 +428,8 @@ var Magnifier = function (evt, options) {
 
         if (options.zoomable !== undefined) {
             zoomable = options.zoomable;
+        } else if (thumb.getAttribute('data-zoomable') !== null) {
+            zoomable = thumb.getAttribute('data-zoomable');
         } else if (curData.zoomable !== undefined) {
             zoomable = curData.zoomable;
         }
@@ -375,6 +447,7 @@ var Magnifier = function (evt, options) {
             thumbCssClass: thumb.className,
             zoomAttached: false,
             status: 0,
+            largeUrl: largeUrl,
             largeWrapperId: largeWrapper.id,
             largeWrapperW: largeWrapper.offsetWidth,
             largeWrapperH: largeWrapper.offsetHeight,
@@ -426,7 +499,7 @@ var Magnifier = function (evt, options) {
                 updateLensOnLoad(idx, thumb, largeObj, largeWrapper);
             });
 
-            largeObj.src = options.large;
+            largeObj.src = data[idx].largeUrl;
         });
 
         thumbObj.src = thumb.src;
