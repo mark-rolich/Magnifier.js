@@ -27,7 +27,8 @@ p {
 table {
     width: 100%;
     border: solid 1px #4183C4;
-    border-collapse: collapse
+    border-collapse: collapse;
+    font-size: 13px
 }
 
 table th {

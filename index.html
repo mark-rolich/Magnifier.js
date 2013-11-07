@@ -59,7 +59,7 @@
     &lt;a class=&quot;magnifier-thumb-wrapper&quot; href=&quot;http://en.wikipedia.org/wiki/File:Starry_Night_Over_the_Rhone.jpg&quot;&gt;
         &lt;img id=&quot;thumb&quot; src=&quot;http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/200px-Starry_Night_Over_the_Rhone.jpg&quot;&gt;
     &lt;/a&gt;
-    &lt;div class=&quot;magnifier-preview&quot; id=&quot;preview&quot; style=&quot;width: 200px; height: 133px&quot;&gt;&amp;nbsp;&lt;/div&gt;
+    &lt;div class=&quot;magnifier-preview&quot; id=&quot;preview&quot; style=&quot;width: 200px; height: 133px&quot;&gt;Starry Night Over The Rhone&lt;br&gt;by Vincent van Gogh&lt;/div&gt;
 &lt;/div&gt;</code></pre>
 
     <p class="note">The image we need to apply magnifying glass effect should wrapped in a <strong>block-level</strong> element with <strong>relative</strong> position,
@@ -76,32 +76,61 @@ var evt = new Event(),
 &lt;/script&gt;</code></pre>
     <p>Set magnifier options</p>
     <pre><code>m.attach({
-    thumb: document.getElementById('thumb'),
+    thumb: '#thumb',
     large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/400px-Starry_Night_Over_the_Rhone.jpg',
-    largeWrapper: document.getElementById('preview')
+    largeWrapper: 'preview'
 });</code></pre>
 
     <p>Result (mouseover to magnify)</p>
 
     <div style="width: 410px; margin: 0 auto; overflow: hidden">
         <a class="magnifier-thumb-wrapper demo" href="http://en.wikipedia.org/wiki/File:Starry_Night_Over_the_Rhone.jpg">
-            <img id="thumb" src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/200px-Starry_Night_Over_the_Rhone.jpg">
+            <img id="thumb" src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/200px-Starry_Night_Over_the_Rhone.jpg"
+            data-large-img-url="http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/400px-Starry_Night_Over_the_Rhone.jpg"
+            data-large-img-wrapper="preview">
         </a>
         <div class="magnifier-preview example heading" id="preview" style="width: 200px; height: 133px">Starry Night Over The Rhone<br>by Vincent van Gogh</div>
     </div>
 
+    <p>Magnifier.js supports <strong>data attributes</strong>, the code above could be written in the following way:</p>
+
+    <pre><code>&lt;div&gt;
+    &lt;a class=&quot;magnifier-thumb-wrapper&quot; href=&quot;http://en.wikipedia.org/wiki/File:Starry_Night_Over_the_Rhone.jpg&quot;&gt;
+        &lt;img id=&quot;thumb&quot; src=&quot;http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/200px-Starry_Night_Over_the_Rhone.jpg&quot;
+        data-large-img-url=&quot;http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/400px-Starry_Night_Over_the_Rhone.jpg&quot;
+        data-large-img-wrapper=&quot;preview&quot;&gt;
+    &lt;/a&gt;
+    &lt;div class=&quot;magnifier-preview&quot; id=&quot;preview&quot; style=&quot;width: 200px; height: 133px&quot;&gt;Starry Night Over The Rhone&lt;br&gt;by Vincent van Gogh&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+    <p>and the Javascript</p>
+
+    <pre><code>m.attach({thumb: '#thumb'});</code></pre>
+
+    <p>It's possible to attach magnifier to multiple images assigning class name to <span class="code">thumb</span> property
+    and providing large images URL via <span class="code">data-large-img-url</span> data attribute</p>
+
+    <pre><code>&lt;img src=&quot;http://example.com/image1.jpg&quot; class=&quot;img&quot; data-large-img-url=&quot;http://example.com/large-image1.jpg&quot;&gt;
+&lt;img src=&quot;http://example.com/image2.jpg&quot; class=&quot;img&quot; data-large-img-url=&quot;http://example.com/large-image2.jpg&quot;&gt;
+&lt;img src=&quot;http://example.com/image3.jpg&quot; class=&quot;img&quot; data-large-img-url=&quot;http://example.com/large-image3.jpg&quot;&gt;</code></pre>
+
+    <pre><code>m.attach({
+    thumb: '.img',
+    largeWrapper: 'preview'
+});</code></pre>
+
     <p>Let's make preview window larger (2x of the size of the thumbnail)</p>
 
     <pre><code>...
-&lt;div class=&quot;magnifier-preview&quot; id=&quot;preview&quot; style=&quot;width: 400px; height: 267px&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;div class=&quot;magnifier-preview&quot; id=&quot;preview&quot; style=&quot;width: 400px; height: 267px&quot;&gt;Starry Night Over The Rhone&lt;br&gt;by Vincent van Gogh&lt;/div&gt;
 ...</code></pre>
 
     <p>And set zoom level to 3</p>
 
     <pre><code>m.attach({
-    thumb: document.getElementById('thumb'),
+    thumb: '#thumb',
     large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/1200px-Starry_Night_Over_the_Rhone.jpg',
-    largeWrapper: document.getElementById('preview'),
+    largeWrapper: 'preview',
     zoom: 3
 });</code></pre>
 
@@ -122,6 +151,7 @@ var evt = new Event(),
         <thead>
             <tr>
                 <th>Property</th>
+                <th>Data attribute</th>
                 <th>Type</th>
                 <th>Description</th>
                 <th>Required</th>
@@ -131,13 +161,15 @@ var evt = new Event(),
         <tbody>
             <tr>
                 <td>thumb</td>
-                <td>DOM element</td>
-                <td>image element to magnify</td>
+                <td>&nbsp;</td>
+                <td>string</td>
+                <td>ID or class of the image element to magnify preceded by "#" or "."</td>
                 <td>yes</td>
                 <td>&nbsp;</td>
             </tr>
             <tr>
                 <td>large</td>
+                <td>data-large-img-url</td>
                 <td>string</td>
                 <td>large image URL</td>
                 <td>yes</td>
@@ -145,13 +177,15 @@ var evt = new Event(),
             </tr>
             <tr>
                 <td>largeWrapper</td>
-                <td>DOM element</td>
-                <td>element where large image should be appended</td>
+                <td>data-large-img-wrapper</td>
+                <td>string</td>
+                <td>ID of the element where large image will be appended</td>
                 <td>yes</td>
                 <td>&nbsp;</td>
             </tr>
             <tr>
                 <td>zoom</td>
+                <td>data-zoom</td>
                 <td>int</td>
                 <td>initial zoom level</td>
                 <td>no</td>
@@ -159,6 +193,7 @@ var evt = new Event(),
             </tr>
             <tr>
                 <td>zoomable</td>
+                <td>data-zoomable</td>
                 <td>bool</td>
                 <td>enable zoom in / out using mouse wheel</td>
                 <td>no</td>
@@ -166,6 +201,7 @@ var evt = new Event(),
             </tr>
             <tr>
                 <td>onthumbenter</td>
+                <td>&nbsp;</td>
                 <td>callback</td>
                 <td>function to call on thumbnail enter event</td>
                 <td>no</td>
@@ -173,6 +209,7 @@ var evt = new Event(),
             </tr>
             <tr>
                 <td>onthumbmove</td>
+                <td>&nbsp;</td>
                 <td>callback</td>
                 <td>function to call on thumbnail move event</td>
                 <td>no</td>
@@ -180,6 +217,7 @@ var evt = new Event(),
             </tr>
             <tr>
                 <td>onthumbleave</td>
+                <td>&nbsp;</td>
                 <td>callback</td>
                 <td>function to call on thumbnail leave event</td>
                 <td>no</td>
@@ -187,6 +225,7 @@ var evt = new Event(),
             </tr>
             <tr>
                 <td>onzoom</td>
+                <td>&nbsp;</td>
                 <td>callback</td>
                 <td>function to call on zoom event</td>
                 <td>no</td>
@@ -208,7 +247,7 @@ var evt = new Event(),
 
     <p>Also, you can omit parameters on subsequent calls of <strong>attach</strong> method once you set them up (whether globally or not), Magnifier.js
     uses values from the last found options setup (for <span class="code">zoom</span> it uses only global or default value), keeping in mind that
-    <span class="code">thumb</span> and <span class="code">large</span> should be always specified in the options object.
+    <span class="code">thumb</span> should be always specified in the options object (if <span class="code">large</span> is not set, thumbnail image will be used instead).
     </p>
 
     <p>Once called, user defined event handlers receive as an argument the object with the following properties:</p>
@@ -294,9 +333,9 @@ var evt = new Event(),
     <p>An example of user defined functions attachment</p>
 
     <pre><code>m.attach({
-    thumb: document.getElementById('thumb2'),
+    thumb: '#thumb2',
     large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/1600px-Starry_Night_Over_the_Rhone.jpg',
-    largeWrapper: document.getElementById('preview2'),
+    largeWrapper: 'preview2',
     zoom: 2,
     zoomable: true,
     onthumbenter: function () {
@@ -394,24 +433,22 @@ var evt = new Event(),
     });
 
 m.attach({
-    thumb: document.getElementById('thumb'),
-    large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/400px-Starry_Night_Over_the_Rhone.jpg',
-    largeWrapper: document.getElementById('preview'),
+    thumb: '#thumb',
     zoomable: false
 });
 
 m.attach({
-    thumb: document.getElementById('thumb1'),
+    thumb: '#thumb1',
     large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/1200px-Starry_Night_Over_the_Rhone.jpg',
-    largeWrapper: document.getElementById('preview1'),
+    largeWrapper: 'preview1',
     zoom: 3,
     zoomable: false
 });
 
 m.attach({
-    thumb: document.getElementById('thumb2'),
+    thumb: '#thumb2',
     large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/1600px-Starry_Night_Over_the_Rhone.jpg',
-    largeWrapper: document.getElementById('preview2'),
+    largeWrapper: 'preview2',
     zoom: 2,
     zoomable: true,
     onthumbenter: function (data) {

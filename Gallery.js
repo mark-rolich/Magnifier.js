@@ -16,12 +16,7 @@ var Gallery = function (evt, m, options) {
             }
 
             curImg = options.gallery.childNodes[cur].childNodes[0].childNodes[0];
-
-            m.attach({
-                thumb: curImg,
-                large: options.images[cur].large,
-                zoomable: true
-            });
+            m.setThumb(curImg);
 
             options.gallery.parentNode.scrollTop = (curImg.offsetHeight) * cur;
             options.previewText.childNodes[0].nodeValue = options.images[cur].title;
@@ -42,7 +37,9 @@ var Gallery = function (evt, m, options) {
             a.href = options.images[i].url;
             a.title = options.images[i].title;
             img.src = options.images[i].thumb;
-            img.className = 'img-' + i;
+            img.setAttribute('data-large-img-url', options.images[i].large);
+            img.className = 'img';
+            img.id = 'img-' + i;
 
             a.appendChild(img);
             li.appendChild(a);
@@ -51,7 +48,13 @@ var Gallery = function (evt, m, options) {
         }
 
         options.gallery.appendChild(frag);
+
         walk(1);
+
+        m.attach({
+            thumb: '.img',
+            zoomable: true
+        });
     };
 
     this.next = function () {
