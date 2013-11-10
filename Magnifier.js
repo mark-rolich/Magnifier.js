@@ -38,7 +38,9 @@ var Magnifier = function (evt, options) {
             largeL: 0,
             largeT: 0,
             zoom: 2,
-            largeWrapperId: gOptions.largeWrapper.id || null,
+            largeWrapperId: (gOptions.largeWrapper !== undefined)
+                ? (gOptions.largeWrapper.id || null)
+                : null,
             status: 0,
             zoomAttached: false,
             zoomable: (gOptions.zoomable !== undefined)
