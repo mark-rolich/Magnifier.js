@@ -20,6 +20,7 @@
 
     <ul>
         <li>Zoom in / out functionality using mouse wheel</li>
+        <li>Magnified image can be displayed in the lens itself or outside of it in a wrapper</li>
         <li>Attachment of user defined functions for thumbnail entering, moving and leaving and image zooming events</li>
         <li>Display loading text while the large image is loading, and switch to lens once its loaded</li>
     </ul>
@@ -83,7 +84,7 @@ var evt = new Event(),
 
     <p>Result (mouseover to magnify)</p>
 
-    <div style="width: 410px; margin: 0 auto; overflow: hidden">
+    <div style="width: 410px; margin: 0 auto">
         <a class="magnifier-thumb-wrapper demo" href="http://en.wikipedia.org/wiki/File:Starry_Night_Over_the_Rhone.jpg">
             <img id="thumb" src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/200px-Starry_Night_Over_the_Rhone.jpg"
             data-large-img-url="http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/400px-Starry_Night_Over_the_Rhone.jpg"
@@ -134,7 +135,7 @@ var evt = new Event(),
     zoom: 3
 });</code></pre>
 
-    <div style="width: 610px; margin: 0 auto; overflow: hidden">
+    <div style="width: 610px; margin: 0 auto">
         <a class="magnifier-thumb-wrapper demo" href="http://en.wikipedia.org/wiki/File:Starry_Night_Over_the_Rhone.jpg">
             <img id="thumb1" src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/200px-Starry_Night_Over_the_Rhone.jpg">
         </a>
@@ -142,6 +143,25 @@ var evt = new Event(),
     </div>
 
     <p>Magnifier.js automatically increases zoom level if preview window size is bigger than thumbnail size (in our example by 2, so actual zoom level is 6)</p>
+
+    <p>Magnifier.js can display magnified image inside lens:</p>
+
+    <pre><code>m.attach({
+    thumb: '#thumb',
+    large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/1200px-Starry_Night_Over_the_Rhone.jpg',
+    mode: 'inside',
+    zoom: 3,
+    zoomable: true
+});</code></pre>
+
+    <div style="width: 200px; margin: 0 auto">
+        <a class="magnifier-thumb-wrapper demo" href="http://en.wikipedia.org/wiki/File:Starry_Night_Over_the_Rhone.jpg">
+            <img id="thumb-inside" src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/200px-Starry_Night_Over_the_Rhone.jpg"
+            data-mode="inside" data-zoomable="true">
+        </a>
+    </div>
+
+    <p>Note that in this case there's no need to specify large image wrapper</p>
 
     <h2 class="heading">Deeper view</h2>
 
@@ -180,7 +200,7 @@ var evt = new Event(),
                 <td>data-large-img-wrapper</td>
                 <td>string</td>
                 <td>ID of the element where large image will be appended</td>
-                <td>yes</td>
+                <td>yes (if mode is 'outside')</td>
                 <td>&nbsp;</td>
             </tr>
             <tr>
@@ -190,6 +210,14 @@ var evt = new Event(),
                 <td>initial zoom level</td>
                 <td>no</td>
                 <td>2</td>
+            </tr>
+            <tr>
+                <td>mode</td>
+                <td>data-mode</td>
+                <td>string</td>
+                <td>'inside' or 'outside', specifies whether to display magnified image inside / outside lens</td>
+                <td>no</td>
+                <td>outside</td>
             </tr>
             <tr>
                 <td>zoomable</td>
@@ -246,7 +274,7 @@ var evt = new Event(),
     <p>
 
     <p>Also, you can omit parameters on subsequent calls of <strong>attach</strong> method once you set them up (whether globally or not), Magnifier.js
-    uses values from the last found options setup (for <span class="code">zoom</span> it uses only global or default value), keeping in mind that
+    uses values from the last found options setup (for <span class="code">zoom</span> and <span class="code">mode</span> it uses only global or default value), keeping in mind that
     <span class="code">thumb</span> should be always specified in the options object (if <span class="code">large</span> is not set, thumbnail image will be used instead).
     </p>
 
@@ -435,6 +463,12 @@ var evt = new Event(),
 m.attach({
     thumb: '#thumb',
     zoomable: false
+});
+
+m.attach({
+    thumb: '#thumb-inside',
+    large: 'http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/1200px-Starry_Night_Over_the_Rhone.jpg',
+    zoom: 3
 });
 
 m.attach({
