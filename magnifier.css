@@ -10,7 +10,8 @@
     border: solid 1px #ccc;
     z-index: 1000;
     top: 0;
-    left: 0
+    left: 0;
+    overflow: hidden
 }
 
 .magnifier-loader {
@@ -30,6 +31,11 @@
 .magnifier-loader-text {
     font: 13px Arial;
     margin-top: 10px
+}
+
+.magnifier-large {
+    position: absolute;
+    z-index: 100
 }
 
 .magnifier-preview {

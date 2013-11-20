@@ -5,6 +5,7 @@
 *
 * Zoom in / out functionality using mouse wheel
 * Setting options via Javascript or data attributes
+* Magnified image can be displayed in the lens itself or outside of it in a wrapper
 * Attachment to multiple images with single call
 * Attachment of user defined functions for thumbnail entering, moving and leaving and image zooming events
 * Display loading text while the large image is being loaded, and switch to lens once its loaded
@@ -38,6 +39,7 @@ var Magnifier = function (evt, options) {
             largeL: 0,
             largeT: 0,
             zoom: 2,
+            mode: 'outside',
             largeWrapperId: (gOptions.largeWrapper !== undefined)
                 ? (gOptions.largeWrapper.id || null)
                 : null,
@@ -73,6 +75,7 @@ var Magnifier = function (evt, options) {
         gZoom = (gOptions.zoom !== undefined)
                     ? gOptions.zoom
                     : curData.zoom,
+        gMode = gOptions.mode || curData.mode,
         data = {},
         inBounds = false,
         getElementsByClass = function (className) {
@@ -164,7 +167,11 @@ var Magnifier = function (evt, options) {
                 large.style.height = data[idx].largeH + 'px';
                 large.className = 'magnifier-large hidden';
 
-                largeWrapper.appendChild(large);
+                if (data[idx].mode === 'inside') {
+                    lens.appendChild(large);
+                } else {
+                    largeWrapper.appendChild(large);
+                }
             }
 
             lens.style.width = data[idx].lensW + 'px';
@@ -188,20 +195,22 @@ var Magnifier = function (evt, options) {
             l = xPos - (curData.lensW / 2);
             t = yPos - (curData.lensH / 2);
 
-            if (xPos < curData.lensW / 2) {
-                l = 0;
-            }
+            if (curData.mode !== 'inside') {
+                if (xPos < curData.lensW / 2) {
+                    l = 0;
+                }
 
-            if (yPos < curData.lensH / 2) {
-                t = 0;
-            }
+                if (yPos < curData.lensH / 2) {
+                    t = 0;
+                }
 
-            if (xPos - curData.w + (curData.lensW / 2) > 0) {
-                l = curData.w - (curData.lensW + 2);
-            }
+                if (xPos - curData.w + (curData.lensW / 2) > 0) {
+                    l = curData.w - (curData.lensW + 2);
+                }
 
-            if (yPos - curData.h + (curData.lensH / 2) > 0) {
-                t = curData.h - (curData.lensH + 2);
+                if (yPos - curData.h + (curData.lensH / 2) > 0) {
+                    t = curData.h - (curData.lensH + 2);
+                }
             }
 
             pos.l = Math.round(l);
@@ -210,12 +219,20 @@ var Magnifier = function (evt, options) {
             curData.lensBgX = pos.l + 1;
             curData.lensBgY = pos.t + 1;
 
-            curData.largeL = Math.round(curData.lensBgX * curData.zoom * (curData.largeWrapperW / curData.w));
-            curData.largeT = Math.round(curData.lensBgY * curData.zoom * (curData.largeWrapperH / curData.h));
+            if (curData.mode === 'inside') {
+                curData.largeL = Math.round(xPos * (curData.zoom - (curData.lensW / curData.w)));
+                curData.largeT = Math.round(yPos * (curData.zoom - (curData.lensH / curData.h)));
+            } else {
+                curData.largeL = Math.round(curData.lensBgX * curData.zoom * (curData.largeWrapperW / curData.w));
+                curData.largeT = Math.round(curData.lensBgY * curData.zoom * (curData.largeWrapperH / curData.h));
+            }
         },
         zoomInOut = function (e) {
             var delta = (e.wheelDelta > 0 || e.detail < 0) ? 0.1 : -0.1,
-                handler = curData.onzoom;
+                handler = curData.onzoom,
+                multiplier = 1,
+                w = 0,
+                h = 0;
 
             if (e.preventDefault) {
                 e.preventDefault();
@@ -229,8 +246,17 @@ var Magnifier = function (evt, options) {
                 curData.lensW = Math.round(curData.w / curData.zoom);
                 curData.lensH = Math.round(curData.h / curData.zoom);
 
-                curData.largeW = Math.round(curData.zoom * curData.largeWrapperW);
-                curData.largeH = Math.round(curData.zoom * curData.largeWrapperH);
+                if (curData.mode === 'inside') {
+                    w = curData.w;
+                    h = curData.h;
+                } else {
+                    w = curData.largeWrapperW;
+                    h = curData.largeWrapperH;
+                    multiplier = curData.largeWrapperW / curData.w;
+                }
+
+                curData.largeW = Math.round(curData.zoom * w);
+                curData.largeH = Math.round(curData.zoom * h);
 
                 getMousePos();
                 updateLensOnZoom();
@@ -242,7 +268,7 @@ var Magnifier = function (evt, options) {
                         large: curLarge,
                         x: pos.x,
                         y: pos.y,
-                        zoom: Math.round(curData.zoom * (curData.largeWrapperW / curData.w) * 10) / 10,
+                        zoom: Math.round(curData.zoom * multiplier * 10) / 10,
                         w: curData.lensW,
                         h: curData.lensH
                     });
@@ -342,7 +368,9 @@ var Magnifier = function (evt, options) {
             status = curData.status;
         },
         setThumbData = function (thumb, thumbData) {
-            var thumbBounds = thumb.getBoundingClientRect();
+            var thumbBounds = thumb.getBoundingClientRect(),
+                w = 0,
+                h = 0;
 
             thumbData.x = thumbBounds.left;
             thumbData.y = thumbBounds.top;
@@ -352,8 +380,16 @@ var Magnifier = function (evt, options) {
             thumbData.lensW = Math.round(thumbData.w / thumbData.zoom);
             thumbData.lensH = Math.round(thumbData.h / thumbData.zoom);
 
-            thumbData.largeW = Math.round(thumbData.zoom * thumbData.largeWrapperW);
-            thumbData.largeH = Math.round(thumbData.zoom * thumbData.largeWrapperH);
+            if (thumbData.mode === 'inside') {
+                w = thumbData.w;
+                h = thumbData.h;
+            } else {
+                w = thumbData.largeWrapperW;
+                h = thumbData.largeWrapperH;
+            }
+
+            thumbData.largeW = Math.round(thumbData.zoom * w);
+            thumbData.largeH = Math.round(thumbData.zoom * h);
         };
 
     this.attach = function (options) {
@@ -401,6 +437,7 @@ var Magnifier = function (evt, options) {
                 $('#' + curData.largeWrapperId)
             ),
             zoom = options.zoom || thumb.getAttribute('data-zoom') || gZoom,
+            mode = options.mode || thumb.getAttribute('data-mode') || gMode,
             onthumbenter = (options.onthumbenter !== undefined)
                         ? options.onthumbenter
                         : curData.onthumbenter,
@@ -422,7 +459,7 @@ var Magnifier = function (evt, options) {
             largeUrl = options.large;
         }
 
-        if (largeWrapper === null) {
+        if (largeWrapper === null && mode !== 'inside') {
             throw {
                 name: 'Magnifier error',
                 message: 'Please specify large image wrapper DOM element',
@@ -447,6 +484,7 @@ var Magnifier = function (evt, options) {
 
         data[idx] = {
             zoom: zoom,
+            mode: mode,
             zoomable: zoomable,
             thumbCssClass: thumb.className,
             zoomAttached: false,
