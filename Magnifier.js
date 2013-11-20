@@ -293,11 +293,13 @@ var Magnifier = function (evt, options) {
                     });
                 }
 
-                curLens.className += ' hidden';
-                curThumb.className = curData.thumbCssClass;
+                if (curLens.className.indexOf('hidden') === -1) {
+                    curLens.className += ' hidden';
+                    curThumb.className = curData.thumbCssClass;
 
-                if (curLarge !== null) {
-                    curLarge.className += ' hidden';
+                    if (curLarge !== null) {
+                        curLarge.className += ' hidden';
+                    }
                 }
             }
         },
@@ -431,7 +433,7 @@ var Magnifier = function (evt, options) {
         if (options.zoomable !== undefined) {
             zoomable = options.zoomable;
         } else if (thumb.getAttribute('data-zoomable') !== null) {
-            zoomable = thumb.getAttribute('data-zoomable');
+            zoomable = (thumb.getAttribute('data-zoomable') === 'true');
         } else if (curData.zoomable !== undefined) {
             zoomable = curData.zoomable;
         }
