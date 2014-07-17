@@ -552,7 +552,7 @@ var Magnifier = function (evt, options) {
         thumbObj.src = thumb.src;
     };
 
-    evt.attach('mousemove', document, function (e, src) {
+    evt.attach('mousemove', document, function (e) {
         pos.x = e.clientX;
         pos.y = e.clientY;
 
