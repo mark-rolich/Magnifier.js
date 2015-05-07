@@ -39,6 +39,8 @@ var Magnifier = function (evt, options) {
             largeL: 0,
             largeT: 0,
             zoom: 2,
+            zoomMin: 1.1,
+            zoomMax: 5,
             mode: 'outside',
             largeWrapperId: (gOptions.largeWrapper !== undefined)
                 ? (gOptions.largeWrapper.id || null)
@@ -75,6 +77,12 @@ var Magnifier = function (evt, options) {
         gZoom = (gOptions.zoom !== undefined)
                     ? gOptions.zoom
                     : curData.zoom,
+        gZoomMin = (gOptions.zoomMin !== undefined)
+                    ? gOptions.zoomMin
+                    : curData.zoomMin,
+        gZoomMax = (gOptions.zoomMax !== undefined)
+                    ? gOptions.zoomMax
+                    : curData.zoomMax,
         gMode = gOptions.mode || curData.mode,
         data = {},
         inBounds = false,
@@ -243,7 +251,9 @@ var Magnifier = function (evt, options) {
 
             curData.zoom = Math.round((curData.zoom + delta) * 10) / 10;
 
-            if (curData.zoom >= 1.1) {
+            if (curData.zoom >= curData.zoomMax) {
+                curData.zoom = curData.zoomMax;
+            } else if (curData.zoom >= curData.zoomMin) {
                 curData.lensW = Math.round(curData.w / curData.zoom);
                 curData.lensH = Math.round(curData.h / curData.zoom);
 
@@ -274,9 +284,8 @@ var Magnifier = function (evt, options) {
                         h: curData.lensH
                     });
                 }
-
             } else {
-                curData.zoom = 1.1;
+                curData.zoom = curData.zoomMin;
             }
         },
         onThumbEnter = function () {
@@ -438,6 +447,8 @@ var Magnifier = function (evt, options) {
                 $('#' + curData.largeWrapperId)
             ),
             zoom = options.zoom || thumb.getAttribute('data-zoom') || gZoom,
+            zoomMin = options.zoomMin || thumb.getAttribute('data-zoom-min') || gZoomMin,
+            zoomMax = options.zoomMax || thumb.getAttribute('data-zoom-max') || gZoomMax,
             mode = options.mode || thumb.getAttribute('data-mode') || gMode,
             onthumbenter = (options.onthumbenter !== undefined)
                         ? options.onthumbenter
@@ -485,6 +496,8 @@ var Magnifier = function (evt, options) {
 
         data[idx] = {
             zoom: zoom,
+            zoomMin: zoomMin,
+            zoomMax: zoomMax,
             mode: mode,
             zoomable: zoomable,
             thumbCssClass: thumb.className,
