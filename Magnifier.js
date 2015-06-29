@@ -565,6 +565,16 @@ var Magnifier = function (evt, options) {
         thumbObj.src = thumb.src;
     };
 
+    this.remove = function () {
+        curData.w = 0;
+        curData.h = 0;
+        onThumbLeave();
+    };
+
+    this.reset = function () {
+        curData = data[curIdx];
+    };
+
     evt.attach('mousemove', document, function (e) {
         pos.x = e.clientX;
         pos.y = e.clientY;
