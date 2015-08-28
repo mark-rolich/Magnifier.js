@@ -192,14 +192,12 @@ var Magnifier = function (evt, options) {
                 t    = 0,
                 l    = 0;
 
-            inBounds = (
+            inBounds = (!(
                 xPos < 0 ||
                 yPos < 0 ||
                 xPos > curData.w ||
                 yPos > curData.h
-            )
-                ? false
-                : true;
+            ));
 
             l = xPos - (curData.lensW / 2);
             t = yPos - (curData.lensH / 2);
