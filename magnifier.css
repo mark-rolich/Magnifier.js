@@ -35,7 +35,8 @@
 
 .magnifier-large {
     position: absolute;
-    z-index: 100
+    z-index: 100;
+    max-width: none;
 }
 
 .magnifier-preview {
