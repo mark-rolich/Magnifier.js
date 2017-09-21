@@ -588,3 +588,5 @@ var Magnifier = function (evt, options) {
         }
     });
 };
+
+module.exports = Magnifier;
