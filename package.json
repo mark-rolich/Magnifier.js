@@ -1,0 +1,19 @@
+{
+  "name": "Magnifier.js",
+  "version": "1.0.0",
+  "description": "Javascript library enabling magnifying glass effect on an images",
+  "main": "Magnifier.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+   },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/mark-rolich/Magnifier.js.git"
+  },
+  "keywords": [
+    "magnifier"
+  ],
+  "author": "Mark Rolich",
+  "license": "MIT",
+  "dependencies": {}
+}
