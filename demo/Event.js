@@ -6,7 +6,7 @@
 *
 * @author Mark Rolich <mark.rolich@gmail.com>
 */
-var Event = function () {
+var Magnifier_event = function () {
     "use strict";
     this.attach = function (evtName, element, listener, capture) {
         var evt         = '',
